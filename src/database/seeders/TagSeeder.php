@@ -44,16 +44,26 @@ class TagSeeder extends Seeder
             ]);
         }
 
-        for ($i = 0; $i < $limit; $i++) {
+        $productId = 1;
+        $tagId = 1;
+
+        for ($i = 0; $i < 55; $i++) {
             $user = rand(1,10);
+            if ($tagId == 10) {
+                $tagId = 1;
+                $productId ++;
+            }
+
             DB::table('product_tags')->insert([
-                'product_id' => rand(1,20),
-                'tag_id' => $i+1,
+                'product_id' => $productId,
+                'tag_id' => $tagId,
                 'created_by' => $user,
                 'updated_by' => $user,
                 'created_at' => date('Y-m-d H:i:s', strtotime('-' . rand(1, 5) . ' years')),
                 'updated_at' => date('Y-m-d H:i:s', strtotime('-' . rand(1, 5) . ' years +1 day')),
             ]);
+
+            $tagId ++;
         }
     }
 }
