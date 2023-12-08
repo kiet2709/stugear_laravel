@@ -76,7 +76,7 @@ class WishlistController extends Controller
                 return response()->json([
                     'fail'=> 'Thất bại',
                     'message'=> 'Không thể thêm sản phẩm vào nữa vì đã thêm rồi!'
-                ], 500);
+                ], 400);
             } else if ($wishlist_product->product_id == $request->product_id && ($wishlist_product->deleted_at != null || $wishlist_product->deleted_by != null)){
                 $result = $this->wishlistRepository->updateWishlist([
                     'updated_by' => $userId,
@@ -93,7 +93,7 @@ class WishlistController extends Controller
                     return response()->json([
                         'fail'=> 'Thất bại',
                         'message'=> 'Thêm sản phẩm vào wishlist thất bại'
-                    ], 500);
+                    ], 400);
                 }
             }
         }
@@ -114,7 +114,7 @@ class WishlistController extends Controller
             return response()->json([
                 'fail'=> 'Thất bại',
                 'message'=> 'Thêm sản phẩm vào wishlist thất bại'
-            ], 500);
+            ], 400);
         }
     }
     public function remove(Request $request)
@@ -156,7 +156,7 @@ class WishlistController extends Controller
             return response()->json([
                 'fail'=> 'Thất bại',
                 'message'=> 'Xóa khỏi wishlist thất bại'
-            ], 500);
+            ], 400);
         }
     }
 }

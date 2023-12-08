@@ -14,7 +14,7 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        $limit = 100;
+        $limit = 10;
 
         $colors = [
             'bg-primary',

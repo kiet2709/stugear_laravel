@@ -10,6 +10,8 @@ Next, navigate in your terminal to the directory you cloned this, and spin up th
 Find id of container php by using `docker ps`
 
 After that run this command:
+`docker exec -it {id_php_container} composer install`
+`docker exec -it {id_php_container} composer update`
 `docker exec -it {id_php_container} php artisan migrate`
 `docker exec -it {id_php_container} php artisan db:seed`
 
