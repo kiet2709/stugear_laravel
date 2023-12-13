@@ -39,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Repositories\Wishlist\WishlistRepositoryInterface::class,
             \App\Repositories\Wishlist\WishlistRepository::class,
         );
+        $this->app->singleton(
+            \App\Repositories\Order\OrderRepositoryInterface::class,
+            \App\Repositories\Order\OrderRepository::class,
+        );
     }
 
     /**

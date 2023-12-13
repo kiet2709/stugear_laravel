@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TagController;
@@ -72,14 +73,19 @@ Route::controller(WishlistController::class)->group(function (){
     Route::post('/wishlists/remove', 'remove')->middleware('auth_jwt');
 });
 
+Route::get('/users/buy/orders', [OrderController::class, 'getCurrentUserOrdersHistory'])->middleware('auth_jwt');
+Route::get('/users/sell/orders', [OrderController::class, 'getCurrentUserOrders'])->middleware('auth_jwt');
+
 Route::controller(UserController::class)->prefix('users')->group(function (){
     Route::get('/', 'index');
     Route::get('/info', 'getCurrentUserInfo')->middleware('auth_jwt');
+    Route::get('/balance','getCurrentUserBalance')->middleware('auth_jwt');
     Route::get('/{id}', 'view');
     Route::post('/{id}/upload-image', 'uploadImage')->middleware('auth_jwt');
     Route::get('/{id}/images', 'getImage');
     Route::patch('/status/{id}','updateStatus')->middleware('auth_jwt');
     Route::patch('/info','updateProfile')->middleware('auth_jwt');
+
 });
 
 Route::controller(TagController::class)->prefix('tags')->group(function (){
@@ -101,9 +107,19 @@ Route::controller(CommentController::class)->group(function (){
 
 Route::controller(PaymentController::class)->prefix('payments')->group(function (){
     Route::get('/test-api-payment','testApiPayment');
-    Route::post('/momo-payment','momoPayment');
-    Route::post('/vnpay-payment','vnpayPayment');
+    Route::post('/momo-payment','momoPayment')->middleware('auth_jwt');;
+    Route::post('/vnpay-payment','vnpayPayment')->middleware('auth_jwt');;
 });
+
+Route::controller(OrderController::class)->prefix('orders')->group(function (){
+    Route::post('/','create')->middleware('auth_jwt');
+    Route::get('/{id}', 'getOrderById')->middleware('auth_jwt');
+    Route::patch('/{id}/seller', 'updateStatusBySeller')->middleware('auth_jwt');
+    Route::patch('/{id}/buyer', 'updateStatusByBuyer')->middleware('auth_jwt');
+    Route::patch('/{id}/admin', 'updateStatusByAdmin')->middleware('admin_permission');
+});
+
+
 
 
 

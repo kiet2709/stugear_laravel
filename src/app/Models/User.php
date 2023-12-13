@@ -33,6 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'verify_code_expired',
         'is_verify_email',
         'image_id',
+        'wallet',
         'created_at',
         'created_by',
         'updated_at',

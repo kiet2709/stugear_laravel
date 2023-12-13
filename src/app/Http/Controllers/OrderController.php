@@ -1,0 +1,379 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Http\Request;
+use App\Util\AuthService;
+use App\Repositories\User\UserRepositoryInterface;
+use Carbon\Carbon;
+use App\Util\AppConstant;
+
+
+class OrderController extends Controller
+{
+
+    protected $userRepository;
+    protected $orderRepository;
+    protected $productRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository, OrderRepositoryInterface $orderRepository, ProductRepositoryInterface $productRepository)
+    {
+        $this->userRepository = $userRepository;
+        $this->orderRepository = $orderRepository;
+        $this->productRepository = $productRepository;
+    }
+
+    public function create(Request $request)
+    {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+
+        // tạo order repository
+        // lưu order với số tiền, quantity, ngày, và user ID, product ID
+        if ($request->price == 0 || $request->quantity == 0) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Giá tiền hoặc số lượng lỗi'
+            ], 400);
+        }
+
+        if (!isset($request->product_id) || $request->product_id == null || $request->product_id == 0) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Hãy truyền sản phẩm phù hợp'
+            ], 400);
+        }
+
+        $total = $request->price * $request->quantity;
+
+        if ($user->wallet < $total) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Số dư không đủ!'
+            ], 400);
+        }
+
+        $this->userRepository->save([
+            'wallet' => $user->wallet - $total,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $userId);
+
+        $product = $this->productRepository->getById($request->product_id);
+
+        $this->productRepository->save([
+            'quantity' => $product->quantity - 1,
+            'updated_at' => Carbon::now()
+        ], $request->product_id);
+
+        $this->orderRepository->save([
+            'user_id' => $userId,
+            'seller_id' => $product->user_id,
+            'product_id' => $request->product_id,
+            'quantity' => $request->quantity,
+            'price' => $request->price,
+            'total' => $total,
+            'status' => 1,
+            'created_by' => $userId,
+            'updated_by' => $userId,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+        return response()->json([
+            'status' => 'thành công',
+            'message' => 'Tạo đơn hàng thành công'
+        ]);
+
+        // trừ tiền trong ví của user ID
+    }
+
+    private function getStatus($status)
+    {
+        switch ($status) {
+            case 1:
+                return 'Đang xử lý';
+            case 2:
+                return 'Đang giao hàng';
+            case 3:
+                return 'Đã giao hàng';
+            case 4:
+                return 'Đã nhận được hàng';
+            case 5:
+                return 'Hoàn hàng';
+            case 6:
+                return 'Đã nhận được hàng hoàn';
+            case 7:
+                return 'Hoàn tiền';
+        }
+    }
+
+    public function getOrderById(Request $request, $id) {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+        $order = $this->orderRepository->getById($id);
+        if (!$order) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không tồn tại đơn hàng này!'
+            ], 400);
+        }
+
+        $product = $this->productRepository->getById($order->product_id);
+
+        if ($product->user_id != $user->id && $user->id != $order->user_id) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không có quyền đơn hàng này!'
+            ], 400);
+        }
+
+        $data = [];
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => [
+                'id' => $order->product_id,
+                'product_image' => AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images',
+                'product_title' => $product->name,
+                'product_price' => $order->price,
+                'quantity' => $order->quantity,
+                'status' => $this->getStatus($order->status),
+                'created_date' => $order->created_at,
+                'total_price' => $order->total,
+                'owner_id' => $userId
+            ]
+        ]);
+    }
+
+    public function getCurrentUserOrdersHistory(Request $request)
+    {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $limit = $request->limit ?? 5;
+
+        $orders = $this->orderRepository->getCurrentUserOrdersHistory($userId, $limit);
+        $data = [];
+        $memberData = [];
+        $countProductPerPage = 0;
+        foreach ($orders as $order) {
+            $countProductPerPage++;
+            $memberData['id'] = $order->id;
+            $memberData['product_id'] = $order->product_id;
+            $product = $this->productRepository->getById($order->id);
+            $memberData['product_title'] = $product->name;
+            $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images';
+            $memberData['status'] = $this->getStatus($order->status);
+            $memberData['created_date'] = $order->created_at;
+            array_push($data, $memberData);
+        }
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_items' => $countProductPerPage,
+            'total_pages' => $orders->lastPage(),
+            'total_in_all_page' => $orders->total()
+        ]);
+
+    }
+
+    public function getCurrentUserOrders(Request $request)
+    {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $limit = $request->limit ?? 5;
+
+        $orders = $this->orderRepository->getCurrentUserOrders($userId, $limit);
+        $data = [];
+        $memberData = [];
+        $countProductPerPage = 0;
+        foreach ($orders as $order) {
+            $countProductPerPage++;
+            $memberData['id'] = $order->id;
+            $memberData['product_id'] = $order->product_id;
+            $product = $this->productRepository->getById($order->id);
+            $memberData['product_title'] = $product->name;
+            $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images';
+            $memberData['status'] = $this->getStatus($order->status);
+            $memberData['created_date'] = $order->created_at;
+            array_push($data, $memberData);
+        }
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_items' => $countProductPerPage,
+            'total_pages' => $orders->lastPage(),
+            'total_in_all_page' => $orders->total()
+        ]);
+
+    }
+
+    public function updateStatusBySeller(Request $request, $id) {
+        // lấy order bằng ID
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $order = $this->orderRepository->getById($id);
+
+        if ($userId != $order->seller_id)
+        {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Phải là người bán mới được cập nhật các trạng thái này!',
+            ], 400);
+        }
+
+        if ($request->status == 6 && $order->status != 5)
+        {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái hoàn hàng!',
+            ], 400);
+        }
+
+        if ($request->status != 2 && $request->status != 3 && $request->status != 6) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Trạng thái cập nhật không phù hợp!',
+            ], 400);
+        }
+
+        $buyer = $this->userRepository->getById($order->user_id);
+
+        if ($request->status == 6) {
+            $this->userRepository->save([
+                'wallet' => $buyer->wallet + $order->total,
+                'updated_by' => $userId,
+                'updated_at' => Carbon::now()
+            ], $order->user_id);
+        }
+
+        $this->orderRepository->save([
+            'status' => $request->status,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $id);
+
+
+        // cập nhật status
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Cập nhật trạng thái đơn hàng thành công',
+        ]);
+    }
+
+    public function updateStatusByBuyer(Request $request ,$id)
+    {
+        // lấy order bằng ID
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $order = $this->orderRepository->getById($id);
+
+        if ($userId != $order->user_id)
+        {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Phải là người mua mới được cập nhật các trạng thái này!',
+            ], 400);
+        }
+
+        if ($request->status == 5 && $order->status != 3)
+        {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái đã giao hàng!',
+            ], 400);
+        }
+
+        if ($request->status == 5 && $order->status != 4)
+        {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng đã ở trạng thái đã nhận được hàng!',
+            ], 400);
+        }
+
+        if ($request->status != 4 && $request->status != 5) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Trạng thái cập nhật không phù hợp!',
+            ], 400);
+        }
+
+        $seller = $this->userRepository->getById($order->seller_id);
+
+        if ($request->status == 4) {
+            $this->userRepository->save([
+                'wallet' => $seller->wallet + $order->total,
+                'updated_by' => $userId,
+                'updated_at' => Carbon::now()
+            ], $order->seller_id);
+        }
+
+        $this->orderRepository->save([
+            'status' => $request->status,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $id);
+
+
+        // cập nhật status
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Cập nhật trạng thái đơn hàng thành công',
+        ]);
+    }
+
+    public function updateStatusByAdmin(Request $request ,$id)
+    {
+        // lấy order bằng ID
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $order = $this->orderRepository->getById($id);
+        
+        $buyer = $this->userRepository->getById($order->user_id);
+
+        $this->userRepository->save([
+            'wallet' => $buyer->wallet + $order->total,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $order->user_id);
+
+        $this->orderRepository->save([
+            'status' => 7,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $id);
+
+
+        // cập nhật status
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Đã hoàn tiền xong',
+        ]);
+    }
+}

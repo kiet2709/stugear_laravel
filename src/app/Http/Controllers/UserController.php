@@ -200,4 +200,18 @@ class UserController extends Controller
             'message'=> 'Cập nhật thông tin thành công',
         ]);
     }
+
+    public function getCurrentUserBalance(Request $request)
+    {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+
+        return response()->json([
+            'user_id' => $userId,
+            'balance' => number_format($user->wallet) . ' VNĐ'
+        ]);
+    }
 }

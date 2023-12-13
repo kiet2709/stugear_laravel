@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer('is_enable')->nullable();
             $table->unsignedBigInteger('image_id')->nullable();
             $table->foreign('image_id')->references('id')->on('images');
+            $table->unsignedBigInteger('wallet')->default(0);
             $table->integer('created_by')->nullable();
             $table->dateTime('created_at')->nullable();
             $table->integer('updated_by')->nullable();

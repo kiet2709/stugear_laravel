@@ -3,9 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Repositories\User\UserRepositoryInterface;
+use App\Util\AuthService;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
+
+    protected $userRepository;
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
 
     private function execPostRequest($url, $data)
     {
@@ -34,7 +43,26 @@ class PaymentController extends Controller
         $accessKey = 'klm05TvNBzhg7h7j';
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
-        $amount = "1000000";
+        $amount = $request->amount;
+        if ($amount  < 50000) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Số tiền cần nạp phải tối thiểu 50.000 VNĐ!'
+            ], 400);
+        }
+
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+
+        $this->userRepository->save([
+            'wallet' => $amount + $user->wallet,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $userId);
+
         $orderId = time() . "";
         $redirectUrl = "http://127.0.0.1:8000/api/payments/test-api-payment";
         $ipnUrl = "http://127.0.0.1:8000/api/payments/test-api-payment";
@@ -67,6 +95,10 @@ class PaymentController extends Controller
 
         header('Location: ' . $jsonResult['payUrl']);
 
+        return response()->json([
+            'payUrl' => $jsonResult['payUrl']
+        ]);
+
     }
 
     public function testApiPayment()
@@ -86,7 +118,25 @@ class PaymentController extends Controller
         $vnp_TxnRef = time() . ""; //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này sang VNPAY
         $vnp_OrderInfo = 'Thanh toán đơn hàng test với vnpay';
         $vnp_OrderType = 'billpayment';
-        $vnp_Amount = 50000 * 100;
+        $amount = $request->amount;
+        if ($amount < 50000) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Số tiền cần nạp phải tối thiểu 50.000 VNĐ!'
+            ], 400);
+        }
+        $vnp_Amount = $amount * 100;
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+
+        $this->userRepository->save([
+            'wallet' => $amount + $user->wallet,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $userId);
         $vnp_Locale = 'vn';
         $vnp_BankCode = 'NCB';
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -143,6 +193,9 @@ class PaymentController extends Controller
             //     header('Location: ' . $vnp_Url);
             //     die();
             // } else {
+
+
+
         return response()->json($returnData);
             // }
     }
