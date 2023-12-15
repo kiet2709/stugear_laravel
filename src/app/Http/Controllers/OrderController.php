@@ -35,10 +35,10 @@ class OrderController extends Controller
 
         // tạo order repository
         // lưu order với số tiền, quantity, ngày, và user ID, product ID
-        if ($request->price == 0 || $request->quantity == 0) {
+        if ($request->quantity == 0) {
             return response()->json([
                 'status' => 'Lỗi',
-                'message' => 'Giá tiền hoặc số lượng lỗi'
+                'message' => 'Số lượng lỗi'
             ], 400);
         }
 
@@ -49,7 +49,9 @@ class OrderController extends Controller
             ], 400);
         }
 
-        $total = $request->price * $request->quantity;
+        $product = $this->productRepository->getById($request->product_id);
+
+        $total = $product->price * $request->quantity;
 
         if ($user->wallet < $total) {
             return response()->json([
@@ -64,19 +66,18 @@ class OrderController extends Controller
             'updated_at' => Carbon::now()
         ], $userId);
 
-        $product = $this->productRepository->getById($request->product_id);
 
         $this->productRepository->save([
             'quantity' => $product->quantity - 1,
             'updated_at' => Carbon::now()
         ], $request->product_id);
 
-        $this->orderRepository->save([
+        $order = $this->orderRepository->save([
             'user_id' => $userId,
             'seller_id' => $product->user_id,
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
-            'price' => $request->price,
+            'price' => $product->price,
             'total' => $total,
             'status' => 1,
             'created_by' => $userId,
@@ -87,7 +88,10 @@ class OrderController extends Controller
 
         return response()->json([
             'status' => 'thành công',
-            'message' => 'Tạo đơn hàng thành công'
+            'message' => 'Tạo đơn hàng thành công',
+            'data' => [
+                'order_id' => $order->id
+            ]
         ]);
 
         // trừ tiền trong ví của user ID
@@ -353,7 +357,7 @@ class OrderController extends Controller
         $userId = AuthService::getUserId($bareToken);
 
         $order = $this->orderRepository->getById($id);
-        
+
         $buyer = $this->userRepository->getById($order->user_id);
 
         $this->userRepository->save([
