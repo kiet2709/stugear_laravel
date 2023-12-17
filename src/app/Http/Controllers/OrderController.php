@@ -51,6 +51,13 @@ class OrderController extends Controller
 
         $product = $this->productRepository->getById($request->product_id);
 
+        if ($request->quantity > $product->quantity) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Số lượng mua vượt giới hạn'
+            ], 400);
+        }
+
         $total = $product->price * $request->quantity;
 
         if ($user->wallet < $total) {
@@ -145,7 +152,7 @@ class OrderController extends Controller
             'status' => 'Thành công',
             'message' => 'Lấy dữ liệu thành công',
             'data' => [
-                'id' => $order->product_id,
+                'id' => $order->id,
                 'product_image' => AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images',
                 'product_title' => $product->name,
                 'product_price' => $order->price,
@@ -153,7 +160,8 @@ class OrderController extends Controller
                 'status' => $this->getStatus($order->status),
                 'created_date' => $order->created_at,
                 'total_price' => $order->total,
-                'owner_id' => $userId
+                'owner_id' => $order->seller_id,
+                'buyer_id' => $order->user_id
             ]
         ]);
     }
@@ -244,44 +252,133 @@ class OrderController extends Controller
             ], 400);
         }
 
-        if ($request->status == 6 && $order->status != 5)
-        {
+        // if ($request->status == 6 && $order->status != 5)
+        // {
+        //     return response()->json([
+        //         'status' => 'Lỗi',
+        //         'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái hoàn hàng!',
+        //     ], 400);
+        // }
+
+        if ($request->status != 2 && $request->status != 3 && $request->status != 6 && $request->status != 8) {
             return response()->json([
                 'status' => 'Lỗi',
-                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái hoàn hàng!',
+                'message' => 'Trạng thái cập nhật không phù hợp!',
             ], 400);
         }
+        $buyer = $this->userRepository->getById($order->user_id);
 
-        if ($request->status != 2 && $request->status != 3 && $request->status != 6) {
+        // if ($request->status == 8) {
+        //     if ($order->status != 1 || $order->status != 2) {
+        //         return response()->json([
+        //             'status' => 'Lỗi',
+        //             'message' => 'Trạng thái cập nhật không phù hợp!',
+        //         ], 400);
+        //     }
+        //     $this->userRepository->save([
+        //         'wallet' => $buyer->wallet + $order->total,
+        //         'updated_by' => $userId,
+        //         'updated_at' => Carbon::now()
+        //     ], $order->user_id);
+        // }
+
+        // if ($request->status == 6) {
+        //     $this->userRepository->save([
+        //         'wallet' => $buyer->wallet + $order->total,
+        //         'updated_by' => $userId,
+        //         'updated_at' => Carbon::now()
+        //     ], $order->user_id);
+        // }
+
+        // $this->orderRepository->save([
+        //     'status' => $request->status,
+        //     'updated_by' => $userId,
+        //     'updated_at' => Carbon::now()
+        // ], $id);
+
+
+        if ($order->status == 1) {
+            if ($request->status != 2 && $request->status != 8) {
+                return response()->json([
+                    'status' => 'Lỗi',
+                    'message' => 'Trạng thái cập nhật không phù hợp!',
+                ], 400);
+            }
+            if ($request->status == 8) {
+                $this->addMoneyForBuyer($buyer, $order, $userId);
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+            if ($request->status == 2) {
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+        } else if ($order->status == 2) {
+            if ($request->status != 3 && $request->status != 8) {
+                return response()->json([
+                    'status' => 'Lỗi',
+                    'message' => 'Trạng thái cập nhật không phù hợp!',
+                ], 400);
+            }
+            if ($request->status == 8) {
+                $this->addMoneyForBuyer($buyer, $order, $userId);
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+            if ($request->status == 3) {
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+        } else if ($order->status == 5) {
+            if ($request->status != 6) {
+                return response()->json([
+                    'status' => 'Lỗi',
+                    'message' => 'Trạng thái cập nhật không phù hợp!',
+                ], 400);
+            }
+            $this->handleUpdateOrder($request, $userId, $id);
+        } else {
             return response()->json([
                 'status' => 'Lỗi',
                 'message' => 'Trạng thái cập nhật không phù hợp!',
             ], 400);
         }
 
-        $buyer = $this->userRepository->getById($order->user_id);
+        // cập nhật status
 
-        if ($request->status == 6) {
-            $this->userRepository->save([
-                'wallet' => $buyer->wallet + $order->total,
-                'updated_by' => $userId,
-                'updated_at' => Carbon::now()
-            ], $order->user_id);
-        }
+        // return response()->json([
+        //     'status' => 'Thành công',
+        //     'message' => 'Cập nhật trạng thái đơn hàng thành công',
+        // ]);
+    }
 
+    private function handleUpdateOrder(Request $request, $userId, $id){
         $this->orderRepository->save([
             'status' => $request->status,
             'updated_by' => $userId,
             'updated_at' => Carbon::now()
         ], $id);
+    }
 
-
-        // cập nhật status
-
-        return response()->json([
-            'status' => 'Thành công',
-            'message' => 'Cập nhật trạng thái đơn hàng thành công',
-        ]);
+    private function addMoneyForBuyer($buyer, $order, $userId)
+    {
+        $this->userRepository->save([
+            'wallet' => $buyer->wallet + $order->total,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ], $order->user_id);
     }
 
     public function updateStatusByBuyer(Request $request ,$id)
@@ -301,23 +398,23 @@ class OrderController extends Controller
             ], 400);
         }
 
-        if ($request->status == 5 && $order->status != 3)
-        {
-            return response()->json([
-                'status' => 'Lỗi',
-                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái đã giao hàng!',
-            ], 400);
-        }
+        // if ($request->status == 5 && $order->status != 3)
+        // {
+        //     return response()->json([
+        //         'status' => 'Lỗi',
+        //         'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng chưa ở trạng thái đã giao hàng!',
+        //     ], 400);
+        // }
 
-        if ($request->status == 5 && $order->status != 4)
-        {
-            return response()->json([
-                'status' => 'Lỗi',
-                'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng đã ở trạng thái đã nhận được hàng!',
-            ], 400);
-        }
+        // if ($request->status == 5 && $order->status != 4)
+        // {
+        //     return response()->json([
+        //         'status' => 'Lỗi',
+        //         'message' => 'Không thể cập nhật trạng thái này nếu đơn hàng đã ở trạng thái đã nhận được hàng!',
+        //     ], 400);
+        // }
 
-        if ($request->status != 4 && $request->status != 5) {
+        if ($request->status != 4 && $request->status != 5 && $request->status != 8) {
             return response()->json([
                 'status' => 'Lỗi',
                 'message' => 'Trạng thái cập nhật không phù hợp!',
@@ -325,28 +422,78 @@ class OrderController extends Controller
         }
 
         $seller = $this->userRepository->getById($order->seller_id);
+        $buyer = $this->userRepository->getById($order->user_id);
 
-        if ($request->status == 4) {
-            $this->userRepository->save([
-                'wallet' => $seller->wallet + $order->total,
-                'updated_by' => $userId,
-                'updated_at' => Carbon::now()
-            ], $order->seller_id);
+
+        // if ($request->status == 4) {
+        //     $this->userRepository->save([
+        //         'wallet' => $seller->wallet + $order->total,
+        //         'updated_by' => $userId,
+        //         'updated_at' => Carbon::now()
+        //     ], $order->seller_id);
+        // }
+
+        // $this->orderRepository->save([
+        //     'status' => $request->status,
+        //     'updated_by' => $userId,
+        //     'updated_at' => Carbon::now()
+        // ], $id);
+
+        if ($order->status == 1) {
+            if ($request->status != 8) {
+                return response()->json([
+                    'status' => 'Lỗi',
+                    'message' => 'Trạng thái cập nhật không phù hợp!',
+                ], 400);
+            }
+            if ($request->status == 8) {
+                $this->addMoneyForBuyer($buyer, $order, $userId);
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+        } else if($order->status == 3) {
+            if ($request->status != 4 && $request->status != 5) {
+                return response()->json([
+                    'status' => 'Lỗi',
+                    'message' => 'Trạng thái cập nhật không phù hợp!',
+                ], 400);
+            }
+            if ($request->status == 4) {
+                $this->userRepository->save([
+                    'wallet' => $seller->wallet + $order->total,
+                    'updated_by' => $userId,
+                    'updated_at' => Carbon::now()
+                ], $order->seller_id);
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+            if ($request->status == 5) {
+                $this->handleUpdateOrder($request, $userId, $id);
+                return response()->json([
+                    'status' => 'Thành công',
+                    'message' => 'Cập nhật trạng thái đơn hàng thành công',
+                ]);
+            }
+        } else {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Trạng thái cập nhật không phù hợp!',
+            ], 400);
         }
-
-        $this->orderRepository->save([
-            'status' => $request->status,
-            'updated_by' => $userId,
-            'updated_at' => Carbon::now()
-        ], $id);
 
 
         // cập nhật status
 
-        return response()->json([
-            'status' => 'Thành công',
-            'message' => 'Cập nhật trạng thái đơn hàng thành công',
-        ]);
+        // return response()->json([
+        //     'status' => 'Thành công',
+        //     'message' => 'Cập nhật trạng thái đơn hàng thành công',
+        // ]);
     }
 
     public function updateStatusByAdmin(Request $request ,$id)
@@ -357,6 +504,13 @@ class OrderController extends Controller
         $userId = AuthService::getUserId($bareToken);
 
         $order = $this->orderRepository->getById($id);
+
+        if ($order->status != 5 && $order->status != 6) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Trạng thái cập nhật không phù hợp!',
+            ], 400);
+        }
 
         $buyer = $this->userRepository->getById($order->user_id);
 

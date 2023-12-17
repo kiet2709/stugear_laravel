@@ -37,6 +37,7 @@ return new class extends Migration
         // 5: hoàn hàng (buyer)
         // 6: đã nhận được hàng hoàn  (seller)
         // 7: hoàn tiền (admin)
+        // 8: hủy đơn hàng (buyer, seller)
 
     }
 
