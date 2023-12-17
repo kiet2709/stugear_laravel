@@ -128,6 +128,8 @@ Route::controller(AskController::class)->prefix('asks')->group(function (){
     Route::post('/handle-report/{id}', 'handleReport')->middleware('admin_permission');
     Route::post('/{id}/upload-image', 'uploadImage')->middleware('auth_jwt');
     Route::get('/{id}/images', 'getImage');
+    Route::get('/withdraws', 'getListWithdraw');
+    Route::get('/reports', 'getListReport');
 });
 
 

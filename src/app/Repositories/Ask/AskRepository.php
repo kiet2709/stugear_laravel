@@ -12,4 +12,9 @@ class AskRepository extends BaseRepository implements AskRepositoryInterface
         return Ask::class;
     }
 
+    public function getListAskByType($type, $limit)
+    {
+        $asks = Ask::where('type', $type)->paginate($limit);
+        return $asks;
+    }
 }

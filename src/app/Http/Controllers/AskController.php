@@ -48,9 +48,9 @@ class AskController extends Controller
     public function getImage($id) {
         $ask = $this->askRepository->getById($id);
         if ($ask->image_id == null) {
-            return response()->json([
-                'message' => 'Không có hình'
-            ]);
+            $imageData = file_get_contents(AppConstant::$ASK_THUMBNAIL);
+            header('Content-Type: image/jpeg');
+            echo $imageData;
         } else {
             $path = ImageService::getPathImage($id, 'asks');
             if (str_contains($path, 'uploads')){
@@ -199,6 +199,60 @@ class AskController extends Controller
         return response()->json([
             'status' => 'Thành công',
             'message' => 'Xử lý báo cáo xong',
+        ]);
+    }
+
+    public function getListWithdraw(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $withdraws = $this->askRepository->getListAskByType(1, $limit);
+        $data = [];
+        $memberData = [];
+        foreach ($withdraws as $withdraw) {
+            $memberData['id'] = $withdraw->id;
+            $memberData['owner_id'] = $withdraw->owner_id;
+            $memberData['amount'] = $withdraw->amount;
+            $memberData['description'] = $withdraw->description;
+            $memberData['date'] = Carbon::parse( $withdraw->created_at)->format('d/m/Y');
+            array_push($data, $memberData);
+        }
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_page' => $withdraws->lastPage(),
+            'total_items' => count($withdraws),
+            'total_in_all_page' => $withdraws->total()
+        ]);
+    }
+
+    public function getListReport(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $reports = $this->askRepository->getListAskByType(2, $limit);
+        $data = [];
+        $memberData = [];
+
+        foreach ($reports as $report) {
+            $memberData['id'] = $report->id;
+            $memberData['owner_id'] = $report->owner_id;
+            $memberData['denounced_id'] = $report->denounced_id;
+            $memberData['description'] = $report->description;
+            $memberData['image'] = AppConstant::$DOMAIN . 'api/asks/' . $report->id . '/images';
+            $memberData['date'] = Carbon::parse( $report->created_at)->format('d/m/Y');
+            array_push($data, $memberData);
+        }
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_page' => $reports->lastPage(),
+            'total_items' => count($reports),
+            'total_in_all_page' => $reports->total()
         ]);
     }
 }

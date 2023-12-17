@@ -184,11 +184,11 @@ class OrderController extends Controller
             $countProductPerPage++;
             $memberData['id'] = $order->id;
             $memberData['product_id'] = $order->product_id;
-            $product = $this->productRepository->getById($order->id);
+            $product = $this->productRepository->getById($order->product_id);
             $memberData['product_title'] = $product->name;
             $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images';
             $memberData['status'] = $this->getStatus($order->status);
-            $memberData['created_date'] = $order->created_at;
+            $memberData['created_date'] = Carbon::parse( $order->created_at)->format('d/m/Y');
             array_push($data, $memberData);
         }
         return response()->json([
@@ -219,11 +219,11 @@ class OrderController extends Controller
             $countProductPerPage++;
             $memberData['id'] = $order->id;
             $memberData['product_id'] = $order->product_id;
-            $product = $this->productRepository->getById($order->id);
+            $product = $this->productRepository->getById($order->product_id);
             $memberData['product_title'] = $product->name;
             $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $order->product_id . '/images';
             $memberData['status'] = $this->getStatus($order->status);
-            $memberData['created_date'] = $order->created_at;
+            $memberData['created_date'] = Carbon::parse( $order->created_at)->format('d/m/Y');
             array_push($data, $memberData);
         }
         return response()->json([
