@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Repositories\User\UserRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -213,5 +214,25 @@ class UserController extends Controller
             'user_id' => $userId,
             'balance' => number_format($user->wallet) . ' VNĐ'
         ]);
+    }
+
+    public function updateAddress(Request $request)
+    {
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+
+        DB::table('contact_details')->where('user_id',$userId)
+            ->update([
+                'full_address' => $request->address,
+                'updated_at' => Carbon::now(),
+                'updated_by' => $userId,
+            ]);
+
+        return response()->json([
+            'status'=> 'Thành công',
+            'message'=> 'Cập nhật địa chỉ thành công',
+        ]);
+
     }
 }

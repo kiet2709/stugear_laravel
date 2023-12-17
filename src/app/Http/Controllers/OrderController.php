@@ -121,6 +121,8 @@ class OrderController extends Controller
                 return 'Đã nhận được hàng hoàn';
             case 7:
                 return 'Hoàn tiền';
+            case 8:
+                return 'Đã hủy';
         }
     }
 
@@ -464,9 +466,15 @@ class OrderController extends Controller
             if ($request->status == 4) {
                 $this->userRepository->save([
                     'wallet' => $seller->wallet + $order->total,
+                    'reputation' => $seller->reputation + 10,
                     'updated_by' => $userId,
                     'updated_at' => Carbon::now()
                 ], $order->seller_id);
+                $this->userRepository->save([
+                    'reputation' => $buyer->reputation + 10,
+                    'updated_by' => $userId,
+                    'updated_at' => Carbon::now()
+                ], $order->user_id);
                 $this->handleUpdateOrder($request, $userId, $id);
                 return response()->json([
                     'status' => 'Thành công',

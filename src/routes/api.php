@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AskController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\WishlistController;
@@ -85,6 +86,7 @@ Route::controller(UserController::class)->prefix('users')->group(function (){
     Route::get('/{id}/images', 'getImage');
     Route::patch('/status/{id}','updateStatus')->middleware('auth_jwt');
     Route::patch('/info','updateProfile')->middleware('auth_jwt');
+    Route::patch('/address','updateAddress')->middleware('auth_jwt');
 
 });
 
@@ -117,6 +119,15 @@ Route::controller(OrderController::class)->prefix('orders')->group(function (){
     Route::patch('/{id}/seller', 'updateStatusBySeller')->middleware('auth_jwt');
     Route::patch('/{id}/buyer', 'updateStatusByBuyer')->middleware('auth_jwt');
     Route::patch('/{id}/admin', 'updateStatusByAdmin')->middleware('admin_permission');
+});
+
+Route::controller(AskController::class)->prefix('asks')->group(function (){
+    Route::post('/withdraw','withdraw')->middleware('auth_jwt');
+    Route::post('/handle-withdraw/{id}', 'handleWithdraw')->middleware('admin_permission');
+    Route::post('/report', 'report')->middleware('auth_jwt');
+    Route::post('/handle-report/{id}', 'handleReport')->middleware('admin_permission');
+    Route::post('/{id}/upload-image', 'uploadImage')->middleware('auth_jwt');
+    Route::get('/{id}/images', 'getImage');
 });
 
 

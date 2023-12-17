@@ -116,7 +116,7 @@ class ProductController extends Controller
             $data['owner_name'] = $product->user->name;
             $data['owner_id'] = $product->user->id;
             $data['quantity'] = $product->quantity;
-            $data['transaction_method'] = $product->transaction_id == 0 ? 'Trực tiếp' : 'Trên trang web';
+            $data['transaction_method'] = $product->transaction_id == 1 ? 'Trực tiếp' : 'Trên trang web';
             return response()->json([
                 'status'=> 'success',
                 'message'=> 'Lấy dữ liệu thành công',
@@ -467,6 +467,14 @@ class ProductController extends Controller
         $token = $request->header();
         $bareToken = substr($token['authorization'][0], 7);
         $userId = AuthService::getUserId($bareToken);
+
+        $user = $this->userRepository->getById($userId);
+        if ($user->reputation < 0) {
+            return response()->json([
+                'status' => 'Lỗi',
+                'message' => 'Không cho phép tạo sản phẩm vì uy tín thấp!'
+            ],400);
+        }
 
         $role = DB::table('user_roles')
         ->where('user_id', $userId)
