@@ -255,4 +255,33 @@ class AskController extends Controller
             'total_in_all_page' => $reports->total()
         ]);
     }
+
+    public function getListWithdrawByCurrentUser(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $token = $request->header();
+        $bareToken = substr($token['authorization'][0], 7);
+        $userId = AuthService::getUserId($bareToken);
+        $withdraws = $this->askRepository->getListAskByCurrentUser(1, $limit, $userId);
+        $data = [];
+        $memberData = [];
+        foreach ($withdraws as $withdraw) {
+            $memberData['id'] = $withdraw->id;
+            $memberData['owner_id'] = $withdraw->owner_id;
+            $memberData['amount'] = $withdraw->amount;
+            $memberData['description'] = $withdraw->description;
+            $memberData['date'] = Carbon::parse( $withdraw->created_at)->format('d/m/Y');
+            array_push($data, $memberData);
+        }
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_page' => $withdraws->lastPage(),
+            'total_items' => count($withdraws),
+            'total_in_all_page' => $withdraws->total()
+        ]);
+    }
 }

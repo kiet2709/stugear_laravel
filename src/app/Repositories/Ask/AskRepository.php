@@ -17,4 +17,10 @@ class AskRepository extends BaseRepository implements AskRepositoryInterface
         $asks = Ask::where('type', $type)->paginate($limit);
         return $asks;
     }
+
+    public function getListAskByCurrentUser($type, $limit, $userId)
+    {
+        $asks = Ask::where('type', $type)->where('owner_id', $userId)->paginate($limit);
+        return $asks;
+    }
 }
