@@ -169,25 +169,11 @@ class UserController extends Controller
 
         $userInfo = $this->userRepository->getContactDetail($userId);
 
-        $ward = $request->ward ?? $userInfo->ward;
-        $district = $request->district ?? $userInfo->district;
-        $city = $request->city ?? $userInfo->city;
-        $province = $request->province ?? $userInfo->province;
-
-        $ward2 = $ward != null || $ward != '' ? $ward . ' ' : null;
-        $district2 = $district != null || $district != '' ? $district . ' ' : null;
-        $city2 = $city != null || $city != '' ? $city .  ' ' : null;
-        $province2 = $province != null || $city != '' ? $province . ' ' : null;
-
         $dataContactUser = [
             'gender' => $request->gender ?? $userInfo->gender,
             'phone_number' => $request->phone_number ?? $userInfo->phone_number,
             'birthdate' => $request->birthdate ?? $userInfo->birthdate,
-            'ward' => $ward,
-            'district' => $district,
-            'city' => $city,
-            'province' => $province,
-            'full_address' => $ward2 .  $district2 . $city2 . $province2,
+            'full_address' => $request->address ?? $userInfo->full_address,
             'social_link' => $request->social_link ?? $userInfo->social_link,
             'updated_at' => Carbon::now(),
             'updated_by' => $userId,
@@ -214,25 +200,5 @@ class UserController extends Controller
             'user_id' => $userId,
             'balance' => number_format($user->wallet) . ' VNĐ'
         ]);
-    }
-
-    public function updateAddress(Request $request)
-    {
-        $token = $request->header();
-        $bareToken = substr($token['authorization'][0], 7);
-        $userId = AuthService::getUserId($bareToken);
-
-        DB::table('contact_details')->where('user_id',$userId)
-            ->update([
-                'full_address' => $request->address,
-                'updated_at' => Carbon::now(),
-                'updated_by' => $userId,
-            ]);
-
-        return response()->json([
-            'status'=> 'Thành công',
-            'message'=> 'Cập nhật địa chỉ thành công',
-        ]);
-
     }
 }

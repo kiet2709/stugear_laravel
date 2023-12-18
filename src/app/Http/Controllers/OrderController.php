@@ -160,7 +160,7 @@ class OrderController extends Controller
                 'product_price' => $order->price,
                 'quantity' => $order->quantity,
                 'status' => $this->getStatus($order->status),
-                'created_date' => $order->created_at,
+                'created_date' => Carbon::parse( $order->created_at)->format('d/m/Y'),
                 'total_price' => $order->total,
                 'owner_id' => $order->seller_id,
                 'buyer_id' => $order->user_id

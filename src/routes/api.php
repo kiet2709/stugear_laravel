@@ -86,8 +86,6 @@ Route::controller(UserController::class)->prefix('users')->group(function (){
     Route::get('/{id}/images', 'getImage');
     Route::patch('/status/{id}','updateStatus')->middleware('auth_jwt');
     Route::patch('/info','updateProfile')->middleware('auth_jwt');
-    Route::patch('/address','updateAddress')->middleware('auth_jwt');
-
 });
 
 Route::controller(TagController::class)->prefix('tags')->group(function (){
