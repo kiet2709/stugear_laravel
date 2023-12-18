@@ -212,6 +212,7 @@ class AskController extends Controller
             $memberData['id'] = $withdraw->id;
             $memberData['owner_id'] = $withdraw->owner_id;
             $memberData['amount'] = $withdraw->amount;
+            $memberData['status'] = $this->getStatusAsk($withdraw->status);
             $memberData['description'] = $withdraw->description;
             $memberData['date'] = Carbon::parse( $withdraw->created_at)->format('d/m/Y');
             array_push($data, $memberData);
@@ -240,6 +241,7 @@ class AskController extends Controller
             $memberData['owner_id'] = $report->owner_id;
             $memberData['denounced_id'] = $report->denounced_id;
             $memberData['description'] = $report->description;
+            $memberData['status'] = $this->getStatusAsk($report->status);
             $memberData['image'] = AppConstant::$DOMAIN . 'api/asks/' . $report->id . '/images';
             $memberData['date'] = Carbon::parse( $report->created_at)->format('d/m/Y');
             array_push($data, $memberData);
@@ -269,6 +271,7 @@ class AskController extends Controller
             $memberData['id'] = $withdraw->id;
             $memberData['owner_id'] = $withdraw->owner_id;
             $memberData['amount'] = $withdraw->amount;
+            $memberData['status'] = $this->getStatusAsk($withdraw->status);
             $memberData['description'] = $withdraw->description;
             $memberData['date'] = Carbon::parse( $withdraw->created_at)->format('d/m/Y');
             array_push($data, $memberData);
@@ -283,5 +286,17 @@ class AskController extends Controller
             'total_items' => count($withdraws),
             'total_in_all_page' => $withdraws->total()
         ]);
+    }
+
+    private function getStatusAsk($status)
+    {
+        switch ($status) {
+            case 1:
+                return 'Mới tạo';
+            case 2:
+                return 'Đã xử lý hoàn tất';
+            case 3:
+                return 'Đã hủy';
+        }
     }
 }
