@@ -550,10 +550,13 @@ class OrderController extends Controller
         $data = [];
         $memberData = [];
         foreach ($orders as $order) {
+            $product = $this->productRepository->getById($order->product_id);
             $memberData['id'] = $order->id;
             $memberData['created_date'] = Carbon::parse( $order->created_at)->format('d/m/Y');
             $memberData['buyer_id'] = $order->user_id;
             $memberData['seller_id'] = $order->seller_id;
+            $memberData['product_name'] = $product->name;
+            $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $product->id . '/images';
             $memberData['total'] = $order->total;
             $memberData['status'] = $this->getStatus($order->status);
             array_push($data, $memberData);
