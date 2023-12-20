@@ -557,6 +557,8 @@ class OrderController extends Controller
             $memberData['seller_id'] = $order->seller_id;
             $memberData['product_name'] = $product->name;
             $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $product->id . '/images';
+            $memberData['price'] = $order->price;
+            $memberData['quantity'] = $order->quantity;
             $memberData['total'] = $order->total;
             $memberData['status'] = $this->getStatus($order->status);
             array_push($data, $memberData);
