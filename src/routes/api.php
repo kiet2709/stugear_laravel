@@ -113,6 +113,7 @@ Route::controller(PaymentController::class)->prefix('payments')->group(function 
 
 Route::controller(OrderController::class)->prefix('orders')->group(function (){
     Route::post('/','create')->middleware('auth_jwt');
+    Route::get('/','getAllOrders')->middleware('admin_permission');
     Route::get('/{id}', 'getOrderById')->middleware('auth_jwt');
     Route::patch('/{id}/seller', 'updateStatusBySeller')->middleware('auth_jwt');
     Route::patch('/{id}/buyer', 'updateStatusByBuyer')->middleware('auth_jwt');

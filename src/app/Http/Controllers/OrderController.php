@@ -542,4 +542,31 @@ class OrderController extends Controller
             'message' => 'Đã hoàn tiền xong',
         ]);
     }
+
+    public function getAllOrders(Request $request)
+    {
+        $limit = $request->limit ?? 10;
+        $orders = $this->orderRepository->getAll($limit);
+        $data = [];
+        $memberData = [];
+        foreach ($orders as $order) {
+            $memberData['id'] = $order->id;
+            $memberData['created_date'] = Carbon::parse( $order->created_at)->format('d/m/Y');
+            $memberData['buyer_id'] = $order->user_id;
+            $memberData['seller_id'] = $order->seller_id;
+            $memberData['total'] = $order->total;
+            $memberData['status'] = $this->getStatus($order->status);
+            array_push($data, $memberData);
+        }
+
+        return response()->json([
+            'status' => 'Thành công',
+            'message' => 'Lấy dữ liệu thành công',
+            'data' => $data,
+            'page' => $request->page ?? 1,
+            'total_page' => $orders->lastPage(),
+            'total_items' => count($orders),
+            'total_in_all_page' => $orders->total()
+        ]);
+    }
 }
