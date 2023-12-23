@@ -75,7 +75,7 @@ class OrderController extends Controller
 
 
         $this->productRepository->save([
-            'quantity' => $product->quantity - 1,
+            'quantity' => $product->quantity - $request->quantity,
             'updated_at' => Carbon::now()
         ], $request->product_id);
 
@@ -309,6 +309,7 @@ class OrderController extends Controller
             if ($request->status == 8) {
                 $this->addMoneyForBuyer($buyer, $order, $userId);
                 $this->handleUpdateOrder($request, $userId, $id);
+                $this->rollbackQuantityProduct($id, $userId);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
@@ -351,6 +352,7 @@ class OrderController extends Controller
                 ], 400);
             }
             $this->handleUpdateOrder($request, $userId, $id);
+            $this->rollbackQuantityProduct($id, $userId);
         } else {
             return response()->json([
                 'status' => 'Lỗi',
@@ -372,6 +374,17 @@ class OrderController extends Controller
             'updated_by' => $userId,
             'updated_at' => Carbon::now()
         ], $id);
+    }
+
+    private function rollbackQuantityProduct($orderId, $userId)
+    {
+        $order = $this->orderRepository->getById($orderId);
+        $product = $this->productRepository->getById($order->product_id);
+        $this->productRepository->save([
+            'quantity' => $product->quantity + $order->quantity,
+            'updated_by' => $userId,
+            'updated_at' => Carbon::now()
+        ]);
     }
 
     private function addMoneyForBuyer($buyer, $order, $userId)
@@ -451,6 +464,7 @@ class OrderController extends Controller
             if ($request->status == 8) {
                 $this->addMoneyForBuyer($buyer, $order, $userId);
                 $this->handleUpdateOrder($request, $userId, $id);
+                $this->rollbackQuantityProduct($id, $userId);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
