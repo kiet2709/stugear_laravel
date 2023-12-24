@@ -452,7 +452,6 @@ class ProductController extends Controller
             'name' => 'required|string',
             'price' => 'required|integer|min:1',
             'condition' => 'required|in:1,2',
-            'edition' => 'required',
             'status' => 'required|integer',
             'origin_price' => 'required|integer|min:1',
             'quantity' => 'required|integer|min:1',
@@ -807,21 +806,22 @@ class ProductController extends Controller
             ]);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'string',
-            'price' => 'integer|min:1',
-            'condition' => 'in:1,2',
-            'origin_price' => 'integer|min:1',
-            'status' => 'required|integer|min:0',
-            'quantity' => 'integer|min:1',
-            'category_id' => 'integer|min:1',
-            'transaction_id' => 'integer|min:1',
-        ]);
+        if ($product->status != 1) {
+            $validator = Validator::make($request->all(), [
+                'name' => 'string',
+                'price' => 'integer|min:1',
+                'condition' => 'in:1,2',
+                'origin_price' => 'integer|min:1',
+                'status' => 'required|integer|min:0',
+                'quantity' => 'integer|min:1',
+                'category_id' => 'integer|min:1',
+                'transaction_id' => 'integer|min:1',
+            ]);
 
-        if ($validator->fails()) {
-             return response()->json(['error' => $validator->errors()], 400);
+            if ($validator->fails()) {
+                 return response()->json(['error' => $validator->errors()], 400);
+            }
         }
-
 
         $token = $request->header();
         $bareToken = substr($token['authorization'][0], 7);

@@ -226,11 +226,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
             }
             if (strpos($request->date_to, '/') !== false) {
                 // Nếu có dấu '/', sử dụng định dạng d/m/y
-                $dateTo = Carbon::createFromFormat('d/m/Y', $request->date_to)->startOfDay();
+                $dateTo = Carbon::createFromFormat('d/m/Y', $request->date_to)->endOfDay();
             }
             if (strpos($request->date_to, '-') !== false) {
                 // Nếu có dấu '-', sử dụng định dạng d-m-y
-                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->startOfDay();
+                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->endOfDay();
             }
             $query->where('products.updated_at', '<=', $dateTo);
         }
