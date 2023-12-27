@@ -9,4 +9,6 @@ interface OrderRepositoryInterface extends RepositoryInterface
     public function getCurrentUserOrdersHistory($userId, $limit);
 
     public function getCurrentUserOrders($userId, $limit);
+
+    public function getCompleteOrder();
 }

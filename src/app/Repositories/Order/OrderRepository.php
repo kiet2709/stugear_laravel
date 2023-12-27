@@ -26,4 +26,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $orders;
     }
 
+    public function getCompleteOrder()
+    {
+        $orders = Order::where('status', '=', 4)->get();
+        return $orders;
+    }
+
 }

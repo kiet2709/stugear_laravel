@@ -10,6 +10,8 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'name',
+        'description',
         'created_at',
         'created_by',
         'updated_at',

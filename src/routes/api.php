@@ -34,6 +34,9 @@ Route::controller(AuthController::class)->prefix('auth')->group(function (){
 
 Route::controller(CategoryController::class)->prefix('categories')->group(function (){
     Route::get('/', 'index');
+    Route::post('/', 'create')->middleware('admin_permission');
+    Route::patch('/{id}', 'update')->middleware('admin_permission');
+    Route::delete('/{id}', 'delete')->middleware('admin_permission');
     Route::get('/{id}', 'view');
     Route::post('/{id}/upload-image', 'uploadImage')->middleware('admin_permission');
     Route::get('/{id}/images', 'getImage');
