@@ -134,7 +134,7 @@ class CategoryController extends Controller
              return response()->json(['error' => $validator->errors()], 400);
         }
 
-        $this->categoryRepository->save([
+        $category = $this->categoryRepository->save([
             'name' => $request->name,
             'description' => $request->description ?? '',
             'created_at' => Carbon::now(),
@@ -145,7 +145,10 @@ class CategoryController extends Controller
 
         return response()->json([
             'status' => 'Thành công',
-            'message' => 'Tạo danh mục thành công'
+            'message' => 'Tạo danh mục thành công',
+            'data' => [
+                'id' => $category->id
+            ]
         ]);
     }
 
