@@ -43,7 +43,11 @@ class WishlistController extends Controller
             $memberData['name'] = $product->name;
             $memberData['price'] = $product->price;
             $memberData['product_image'] = AppConstant::$DOMAIN . 'api/products/' . $product->id . '/images';
-            $memberData['status'] = $product->status;
+            if ($product->deleted_at != null) {
+                $memberData['status'] = 'Đã xóa';
+            } else {
+                $memberData['status'] = $product->status;
+            }
             array_push($data, $memberData);
         }
         return response()->json([

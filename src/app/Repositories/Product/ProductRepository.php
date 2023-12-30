@@ -26,6 +26,13 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     }
 
+    public function getFullProductById($id)
+    {
+        $category = $this->model->find($id);
+
+        return $category;
+    }
+
     public function searchByName($q)
     {
         $products = $this->model->where('name','LIKE','%'. $q .'%')

@@ -9,6 +9,7 @@ use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Tag\TagRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\Wishlist\WishlistRepositoryInterface;
 use App\Util\AuthService;
 use App\Util\ImageService;
 use Illuminate\Http\Request;
@@ -26,13 +27,15 @@ class ProductController extends Controller
     protected $userRepository;
     protected $commentRepository;
     protected $orderRepository;
+    protected $wishlistRepository;
 
     public function __construct(ProductRepositoryInterface $productRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         UserRepositoryInterface $userRepository,
         CommentRepositoryInterface $commentRepository,
-        OrderRepositoryInterface $orderRepository)
+        OrderRepositoryInterface $orderRepository,
+        WishlistRepositoryInterface $wishlistRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
@@ -40,6 +43,7 @@ class ProductController extends Controller
         $this->userRepository = $userRepository;
         $this->commentRepository = $commentRepository;
         $this->orderRepository = $orderRepository;
+        $this->wishlistRepository = $wishlistRepository;
     }
 
     public function index(Request $request)
@@ -146,7 +150,7 @@ class ProductController extends Controller
         ], $statusCode);
     }
     public function getImage($id) {
-        $product = $this->productRepository->getById($id);
+        $product = $this->productRepository->getFullProductById($id);
         if ($product->image_id == null) {
             $imageData = file_get_contents(AppConstant::$PRODUCT_THUMBNAIL);
             header('Content-Type: image/jpeg');
@@ -903,6 +907,7 @@ class ProductController extends Controller
         }
 
         $orders = $this->orderRepository->getOrdersWorkingByProductId($id);
+        $wishlist = $this->wishlistRepository->deleteProductInWishlist($id);
         // dd($id);
 
         if (count($orders) != 0) {

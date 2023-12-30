@@ -20,4 +20,6 @@ interface ProductRepositoryInterface extends RepositoryInterface
     public function getProductByCurrentUser($userId, $limit);
 
     public function searchWithCriteria($request, $limit);
+
+    public function getFullProductById($id);
 }

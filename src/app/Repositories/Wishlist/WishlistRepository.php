@@ -5,6 +5,7 @@ namespace App\Repositories\Wishlist;
 use App\Models\Wishlist;
 use App\Repositories\BaseRepository;
 use App\Repositories\Wishlist\WishlistRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class WishlistRepository extends BaseRepository implements WishlistRepositoryInterface
@@ -50,5 +51,13 @@ class WishlistRepository extends BaseRepository implements WishlistRepositoryInt
     {
         $result = $this->model->where('user_id', $userId)->first();
         return $result->id;
+    }
+    public function deleteProductInWishlist($productId)
+    {
+        DB::table("wishlist_products")
+            ->where('product_id', $productId)
+            ->update([
+                'deleted_at' => Carbon::now()
+            ]);
     }
 }

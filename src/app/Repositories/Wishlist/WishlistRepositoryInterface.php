@@ -11,4 +11,5 @@ interface WishlistRepositoryInterface extends RepositoryInterface
     public function updateWishlist($data, $productId, $wishlistId);
     public function getWishlistByIdAndProductId($wishlistId, $productId);
     public function getWishlistIdByUserId($userId);
+    public function deleteProductInWishlist($productId);
 }
