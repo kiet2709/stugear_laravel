@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class AskRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

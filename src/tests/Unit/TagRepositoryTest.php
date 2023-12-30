@@ -9,6 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TagRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

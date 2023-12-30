@@ -10,6 +10,7 @@ use App\Models\Wishlist;
 class WishlistRepositoryTest extends TestCase
 {
 
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

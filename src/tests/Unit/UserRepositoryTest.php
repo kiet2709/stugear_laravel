@@ -7,6 +7,7 @@ use Tests\TestCase;
 
 class UserRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

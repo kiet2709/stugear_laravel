@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class RatingRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void
