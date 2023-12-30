@@ -34,8 +34,9 @@ jobs:
       run: vendor/bin/phpunit tests/Unit/
       working-directory: ./src
 
-    # - name: Upload Test Report
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: PHPUnit Test Report
-    #     path: src/tests/reports/junit.xml
+    - name: Upload Test Report
+      uses: actions/upload-artifact@v2
+      if: always() # This ensures the report is uploaded even if tests fail
+      with:
+        name: PHPUnit Test Report
+        path: src/tests/reports/junit.xml
