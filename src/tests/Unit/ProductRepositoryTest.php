@@ -4,6 +4,7 @@ use App\Models\Product;
 use PHPUnit\Framework\TestCase;
 use App\Repositories\Product\ProductRepository;
 use Mockery as m;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 

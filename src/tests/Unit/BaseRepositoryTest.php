@@ -12,7 +12,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class BaseRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

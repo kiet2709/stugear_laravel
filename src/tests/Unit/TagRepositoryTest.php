@@ -4,6 +4,7 @@ use App\Models\Tag;
 use App\Repositories\Tag\TagRepository;
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 
