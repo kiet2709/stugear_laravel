@@ -32,4 +32,10 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $orders;
     }
 
+    public function getOrdersWorkingByProductId($productId)
+    {
+        $orders = Order::where('product_id', '=', $productId)->where('status', '!=', 4)->get();
+        return $orders;
+    }
+
 }

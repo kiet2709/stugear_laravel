@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Tag\TagRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
@@ -24,18 +25,21 @@ class ProductController extends Controller
     protected $tagRepository;
     protected $userRepository;
     protected $commentRepository;
+    protected $orderRepository;
 
     public function __construct(ProductRepositoryInterface $productRepository,
         CategoryRepositoryInterface $categoryRepository,
         TagRepositoryInterface $tagRepository,
         UserRepositoryInterface $userRepository,
-        CommentRepositoryInterface $commentRepository)
+        CommentRepositoryInterface $commentRepository,
+        OrderRepositoryInterface $orderRepository)
     {
         $this->productRepository = $productRepository;
         $this->categoryRepository = $categoryRepository;
         $this->tagRepository = $tagRepository;
         $this->userRepository = $userRepository;
         $this->commentRepository = $commentRepository;
+        $this->orderRepository = $orderRepository;
     }
 
     public function index(Request $request)
@@ -111,6 +115,7 @@ class ProductController extends Controller
             $data['description'] = $product->description ?? '';
             $data['status'] = $product->status;
             $data['brand'] = $product->brand ?? '';
+            $data['edition'] = $product->edition ?? '';
             $data['last_updated'] = $product->updated_at ?? '';
             $data['owner_image'] = AppConstant::$DOMAIN . 'api/users/' . $product->user->id . '/images';;
             $data['owner_name'] = $product->user->name;
@@ -553,7 +558,7 @@ class ProductController extends Controller
             ], 400);
         }
 
-        if (!in_array($request->condition, [0,1]) && $request->condition != null) {
+        if (!in_array($request->condition, [1,2]) && $request->condition != null) {
             return response()->json([
                 'status'=> 'Lỗi',
                 'message'=> 'Condition không đúng định dạng'
@@ -895,6 +900,16 @@ class ProductController extends Controller
                 'status'=> 'Lỗi',
                 'message'=> 'Không thể xóa sản phẩm của người khác trừ khi là Admin!',
             ]);
+        }
+
+        $orders = $this->orderRepository->getOrdersWorkingByProductId($id);
+        // dd($id);
+
+        if (count($orders) != 0) {
+            return response()->json([
+                'status'=> 'Lỗi',
+                'message'=> 'Sản phẩm đang trong giao dịch, không thể xóa'
+            ], 400);
         }
 
         $this->productRepository->save([

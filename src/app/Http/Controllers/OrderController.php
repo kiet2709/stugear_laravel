@@ -73,11 +73,16 @@ class OrderController extends Controller
             'updated_at' => Carbon::now()
         ], $userId);
 
-
-        $this->productRepository->save([
+        $dataUpdateProduct = [
             'quantity' => $product->quantity - $request->quantity,
             'updated_at' => Carbon::now()
-        ], $request->product_id);
+        ];
+
+        if ($product->quantity == $request->quantity) {
+            $dataUpdateProduct['status'] = 4;
+        }
+
+        $this->productRepository->save($dataUpdateProduct, $request->product_id);
 
         $order = $this->orderRepository->save([
             'user_id' => $userId,
@@ -238,6 +243,29 @@ class OrderController extends Controller
 
     }
 
+    private function rollbackStatusProduct($productId)
+    {
+        $dataUpdateProduct = [
+            'status' => 3,
+            'updated_at' => Carbon::now()
+        ];
+
+        $this->productRepository->save($dataUpdateProduct, $productId);
+    }
+
+    private function updateFinishProduct($productId)
+    {
+        $product = $this->productRepository->getById($productId);
+        if ($product->status == 4) {
+            $dataUpdateProduct = [
+                'status' => 5,
+                'updated_at' => Carbon::now()
+            ];
+
+            $this->productRepository->save($dataUpdateProduct, $productId);
+        }
+    }
+
     public function updateStatusBySeller(Request $request, $id) {
         // lấy order bằng ID
         $token = $request->header();
@@ -310,6 +338,7 @@ class OrderController extends Controller
                 $this->addMoneyForBuyer($buyer, $order, $userId);
                 $this->handleUpdateOrder($request, $userId, $id);
                 $this->rollbackQuantityProduct($id, $userId);
+                $this->rollbackStatusProduct($order->product_id);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
@@ -332,6 +361,8 @@ class OrderController extends Controller
             if ($request->status == 8) {
                 $this->addMoneyForBuyer($buyer, $order, $userId);
                 $this->handleUpdateOrder($request, $userId, $id);
+                $this->rollbackStatusProduct($order->product_id);
+                $this->rollbackStatusProduct($order->product_id);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
@@ -353,6 +384,7 @@ class OrderController extends Controller
             }
             $this->handleUpdateOrder($request, $userId, $id);
             $this->rollbackQuantityProduct($id, $userId);
+            $this->rollbackStatusProduct($order->product_id);
         } else {
             return response()->json([
                 'status' => 'Lỗi',
@@ -465,6 +497,7 @@ class OrderController extends Controller
                 $this->addMoneyForBuyer($buyer, $order, $userId);
                 $this->handleUpdateOrder($request, $userId, $id);
                 $this->rollbackQuantityProduct($id, $userId);
+                $this->rollbackStatusProduct($order->product_id);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
@@ -490,6 +523,7 @@ class OrderController extends Controller
                     'updated_at' => Carbon::now()
                 ], $order->user_id);
                 $this->handleUpdateOrder($request, $userId, $id);
+                $this->updateFinishProduct($order->product_id);
                 return response()->json([
                     'status' => 'Thành công',
                     'message' => 'Cập nhật trạng thái đơn hàng thành công',
