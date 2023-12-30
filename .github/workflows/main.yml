@@ -40,4 +40,4 @@ jobs:
       if: always()
       with:
         name: HTML Coverage Report
-        path: src/tests/reports/html
+        path: src/tests/reports/html/
