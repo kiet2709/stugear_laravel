@@ -32,7 +32,7 @@ jobs:
       working-directory: ./src
 
     - name: Run PHPUnit tests and generate reports
-      run: vendor/bin/phpunit --log-junit tests/reports/junit.xml --coverage-html tests/reports/html
+      run: vendor/bin/phpunit --log-junit tests/reports/junit.xml 
       working-directory: ./src
 
     - name: Upload HTML Coverage Report
