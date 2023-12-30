@@ -31,7 +31,7 @@ jobs:
       working-directory: ./src
 
     - name: Run PHPUnit tests and generate report
-      run: vendor\bin\phpunit tests\unit\
+      run: vendor/bin/phpunit tests/unit/
       working-directory: ./src
 
     # - name: Upload Test Report
