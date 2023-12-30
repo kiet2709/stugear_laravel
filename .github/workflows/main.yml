@@ -30,13 +30,13 @@ jobs:
       run: mkdir -p tests/reports
       working-directory: ./src
 
-    - name: Run PHPUnit tests and generate report
-      run: vendor/bin/phpunit --log-junit tests/Unit/
+    - name: Run PHPUnit tests and generate HTML coverage report
+      run: vendor/bin/phpunit --coverage-html tests/reports/html
       working-directory: ./src
 
-    - name: Upload Test Report
+    - name: Upload HTML Coverage Report
       uses: actions/upload-artifact@v2
-      if: always() # This ensures the report is uploaded even if tests fail
+      if: always()
       with:
-        name: PHPUnit Test Report
-        path: src/tests/reports/junit.xml
+        name: HTML Coverage Report
+        path: src/tests/reports/html
