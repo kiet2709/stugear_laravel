@@ -14,6 +14,9 @@
             <directory suffix=".php">./app</directory>
             <directory suffix=".php">./src</directory>
         </include>
+        <report>
+            <html outputDirectory="tests/reports/html"/>
+        </report>
     </coverage>
     <php>
         <env name="DB_CONNECTION" value="sqlite"/>
