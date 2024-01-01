@@ -44,7 +44,7 @@ class TagSeeder extends Seeder
             ]);
         }
 
-        $maxProductId = 20;
+        $maxProductId = 35;
         $maxTagId = 10;
 
         for ($productId = 1; $productId <= $maxProductId; $productId++) {
