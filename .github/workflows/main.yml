@@ -1,0 +1,43 @@
+name: Laravel PHPUnit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1' # Specify the PHP version here
+        coverage: xdebug
+
+    - name: Change to src directory
+      run: cd ./src
+
+    - name: Install Dependencies
+      run: composer install
+      working-directory: ./src
+
+    - name: Create Report Directory
+      run: mkdir -p tests/reports
+      working-directory: ./src
+
+    - name: Run PHPUnit tests and generate reports
+      run: vendor/bin/phpunit --log-junit tests/reports/junit.xml --coverage-html tests/reports/html tests/Unit/
+      working-directory: ./src
+
+    - name: Upload HTML Coverage Report
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: HTML Coverage Report
+        path: src/tests/reports/html/

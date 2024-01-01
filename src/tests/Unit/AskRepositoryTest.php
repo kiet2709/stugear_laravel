@@ -4,6 +4,7 @@ use App\Repositories\Ask\AskRepository;
 use App\Models\Ask;
 use Illuminate\Pagination\LengthAwarePaginator;
 use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery as m;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class AskRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

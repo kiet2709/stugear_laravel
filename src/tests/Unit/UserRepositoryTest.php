@@ -4,9 +4,11 @@ use App\Models\User;
 use App\Repositories\User\UserRepository;
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

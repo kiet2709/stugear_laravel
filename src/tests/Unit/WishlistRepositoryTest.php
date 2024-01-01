@@ -6,10 +6,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery as m;
 use Tests\TestCase;
 use App\Models\Wishlist;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class WishlistRepositoryTest extends TestCase
 {
 
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void

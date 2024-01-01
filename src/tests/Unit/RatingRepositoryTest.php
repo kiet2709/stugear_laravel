@@ -3,12 +3,14 @@
 use App\Models\RatingProduct;
 use App\Repositories\Rating\RatingRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery as m;
 use Tests\TestCase;
 use Carbon\Carbon;
 
 class RatingRepositoryTest extends TestCase
 {
+    use RefreshDatabase;
     protected $repositoryMock;
 
     public function setUp(): void
