@@ -10,7 +10,7 @@ interface OrderRepositoryInterface extends RepositoryInterface
 
     public function getCurrentUserOrders($userId, $limit);
 
-    public function getCompleteOrder();
+    public function getCompleteOrder($id);
 
     public function getOrdersWorkingByProductId($productId);
 }

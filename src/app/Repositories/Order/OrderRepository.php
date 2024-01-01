@@ -26,9 +26,15 @@ class OrderRepository extends BaseRepository implements OrderRepositoryInterface
         return $orders;
     }
 
-    public function getCompleteOrder()
+    public function getCompleteOrder($id)
     {
-        $orders = Order::where('status', '=', 4)->get();
+        $orders = $orders = DB::table('orders')
+        ->join('products', 'orders.product_id', '=', 'products.id')
+        ->join('categories', 'products.category_id', '=', 'categories.id')
+        ->select('orders.*')
+        ->where('orders.status', '=', 4)
+        ->where('categories.id', '=', $id)
+        ->get();
         return $orders;
     }
 

@@ -103,7 +103,7 @@ class CategoryController extends Controller
     public function getStatisticByCategory($id) {
         $category = $this->categoryRepository->getById($id);
         $products = $category->products;
-        $sold = count($this->orderRepository->getCompleteOrder());
+        $sold = count($this->orderRepository->getCompleteOrder($id));
         $tagTotal = 0;
         foreach ($products as $product) {
             $tagTotal = $tagTotal + DB::table('product_tags')->where('product_id', $product->id)->count();
