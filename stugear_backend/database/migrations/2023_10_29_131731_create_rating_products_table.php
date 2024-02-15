@@ -23,6 +23,7 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->integer('deleted_by')->nullable();
             $table->dateTime('deleted_at')->nullable();
+            $table->primary(['product_id', 'rating_id']);
         });
     }
 

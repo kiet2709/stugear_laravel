@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: stugear_backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:9000"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+  frontend:
+    build:
+      context: stugear_frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    
