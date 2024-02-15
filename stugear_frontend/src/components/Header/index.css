@@ -1,0 +1,105 @@
+.navStyle {
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
+    background: white;
+    position: fixed!important;
+    top: 0;
+    width: 100%;
+    z-index: 99!important;
+    transition: 0.5s!important;
+    font-family: 'Poppins', sans-serif;
+}
+.navDefault {
+    transition: 0.5s!important;
+    padding: 25px 0 20px 0!important;
+    box-shadow: 0 2px 5px 1px rgb(64 60 67 / 16%);
+    background: white;
+    top: 0;
+    width: 100%;
+    z-index: 99!important;
+    transition: 0.5s!important;
+    font-family: 'Poppins', sans-serif;
+}
+
+.mainNav .nav-link {
+    color: #070120!important;
+    margin: 0.5rem 1.2rem!important;
+    font-weight: 600!important;
+    transition: 0.3s;
+    font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif;
+}
+.mainNav .nav-link:after {
+    content: '';
+    display: block;
+    margin: auto;
+    height: 3px;
+    width: 0px;
+    background: transparent;
+    transition: width .5s ease, background-color .5s ease;
+}
+.mainNav .nav-link:hover:after {
+    width: 100%;
+    background: #4C25F5;
+}
+
+.navBrn {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+.brnIcon,
+.navHighlight {
+    color: #7456F7;;
+}
+.brnIcon {
+    font-weight: 800;
+    font-size: 1.6rem
+}
+
+.authBtn {
+    outline: none;
+    border: none;
+    font-weight: 500;
+    color:#fff;
+    background: #7355F7;
+    padding: 0.5rem 1.5rem;
+    margin: 0.5rem ;
+    transition: 0.4s;
+}
+.authBtn:hover { 
+    background : #4B24F5
+}
+.navActiveClass{
+    color:"red";
+    font-weight:900;
+}
+
+@media (max-width: 981px) {
+    .navDefault {
+        background: white;
+        padding: 0.8rem 0.5rem!important;
+        width: 100%;
+        z-index: 99!important;
+        transition: 0.5s!important;
+        text-align: center;
+    }
+    .navStyle{
+        text-align: center;
+    }
+}
+
+#search-group {
+    margin-left: 100px;
+}
+#search-button{
+    background-color: #7355F7;
+}
+#search-button:hover {
+    background-color: #4B24F5;
+}
+#search-icon {
+    color: white     ;
+}
+
+.mainNav .Link {
+    font-family:  'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}

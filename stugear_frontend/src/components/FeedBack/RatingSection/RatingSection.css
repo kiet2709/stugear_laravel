@@ -1,0 +1,56 @@
+.review-section h4 {
+    font-size: 20px;
+    color: #222325;
+    font-weight: 700;
+    margin: auto auto;
+}
+
+
+
+
+.review-section .fit-progressbar-bar .fit-progressbar-background {
+    position: relative;
+    height: 8px;
+    background: #efeff0;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    background-color: #ffffff;
+    ;
+    border-radius: 999px;
+}
+
+.review-section .stars-counters tr .star-progress-bar .progress-fill {
+    background-color: #ffb33e;
+}
+
+.review-section .fit-progressbar-bar .progress-fill {
+
+    height: 100%;
+    position: absolute;
+    left: 0;
+    z-index: 1;
+    border-radius: 999px;
+}
+
+
+
+.review-section .stars-counters td {
+    white-space: nowrap;
+}
+
+.review-section .stars-counters tr .progress-bar-container {
+    width: 100%;
+    padding: 0 10px 0 6px;
+    margin: auto;
+}
+
+.rating .fa-star {
+    margin-right: 5px; /* Adjust the value to control the spacing */
+  }
+
+.rating-total {
+    color: #ffb33e;
+    font-weight: 600;
+}

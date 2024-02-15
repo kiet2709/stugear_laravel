@@ -1,0 +1,26 @@
+
+.category-statistic {
+    margin-left: 20px;
+    display: inline-block;
+    margin-right: 20px;
+    /* Adjust as needed to add space between elements */
+}
+
+.category-statistic span {
+    font-weight: 900;
+}
+
+.category-statistic p {
+    font-size: small;
+    font-weight: lighter;
+}
+
+
+.vertical-line {
+    border-right: 2px solid #7355F7;
+    height: 100%;
+}
+
+.category-filter {
+    margin-left: 20px;
+}

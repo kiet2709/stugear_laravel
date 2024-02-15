@@ -1,0 +1,48 @@
+.my-product-item:hover {
+    transform: scale(1.08);
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+  }
+
+  .my-product-item {
+    overflow: hidden;
+    text-align: center;
+    border-radius: 5px;
+    background: #fff;
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.08);
+    transition: 0.3s;
+  }
+
+  .product-status {
+    color: white;
+    padding: 20px;
+    border-radius: 0.75rem
+}
+
+.product-status h4 {
+    font-weight: 900px;
+}
+
+.product-edit {
+    background-color: #E5E5E5;
+    padding: 10px;
+    border-radius: 1rem;
+    width: 100%;
+    border: none;
+}
+
+.product-edit:hover {
+    background-color: #D4D4D4;
+}
+
+.product-remove:hover {
+    background-color: #FDA4AF;
+}
+
+.product-remove {
+    width: 100%;
+    background-color: #FFE4E6;
+    border-radius: 1rem;
+    padding: 10px;
+    border: none;
+}
+

@@ -1,0 +1,33 @@
+.card-header {
+    background-color: blueviolet;
+}
+
+.small-image {
+    max-width: 30px;
+    /* Adjust as needed */
+    margin-right: 15px;
+    padding-bottom: 5px;
+}
+
+.tag {
+    margin-right:  3px;
+}
+
+/* Custom Pagination Styles */
+.pagination .page-item.active .page-link {
+  background-color: #4b24f5;
+  border-color: #4b24f5;
+  color: white;
+}
+
+.pagination .page-item .page-link {
+  color: black;
+  
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #4b24f5;
+  border-color: #4b24f5;
+  color: white;
+}
+

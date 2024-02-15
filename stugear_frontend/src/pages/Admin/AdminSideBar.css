@@ -1,0 +1,11 @@
+.admin-logout {
+    background-color: rgba(255, 0, 0, 0.53) !important;
+}
+
+.admin-sidebar a:hover {
+    background-color: #F7F7F8 !important;
+}
+
+.admin-sidebar a.active:hover {
+    background-color: #4B24F5 !important;
+}

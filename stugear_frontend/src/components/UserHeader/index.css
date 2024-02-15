@@ -1,0 +1,58 @@
+.popImg {
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer !important;
+    margin: 0.2rem 0 0 0.7rem;
+}
+
+
+
+
+.dropdown-menu {
+    padding-right: 200px;
+}
+
+#popover-contained {
+    width: 170px;
+}
+
+.menu {
+    list-style: none;
+    padding: 0;
+}
+
+.menu li {
+    padding: 8px 16px;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.menu li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.menu .personal-li:hover {
+    background-color: #4B24F5;
+    color: white;
+}
+
+
+
+
+.menu li .link:hover {
+    color: white;
+}
+
+
+.right {
+    margin-left: 10px;
+}
+
+.member-icon {
+    margin-top: 12px;
+    height: 25px;
+}
+

@@ -1,0 +1,100 @@
+.balance-page {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin-top: 50px;
+
+    padding: 50px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #f9f9f9;
+}
+
+.balance-section, .add-balance-section {
+    margin-bottom: 30px;
+}
+
+
+.balance-img {
+    width: 200px;
+}
+
+.add-balance-form input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-balance-form button {
+    background-color: #4CAF50;
+    width: 100px;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-balance-form button:hover {
+    background-color: #45a049;
+}
+
+.balance-page .icon-group {
+    margin-left: 170px;
+    margin-right: 170px;
+}
+
+#one:checked~label.first,
+#two:checked~label.second,
+#three:checked~label.third {
+    border-color: #7700ff;
+}
+
+#one:checked~label.first .circle,
+#two:checked~label.second .circle,
+#three:checked~label.third .circle {
+    border-color: #7a34ca;
+    background-color: #fff;
+}
+
+.track-line {
+    height: 2px !important;
+    background-color: #488978;
+    opacity: 1;
+}
+
+.dot {
+    height: 10px;
+    width: 10px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 0px;
+    background-color: #488978;
+    border-radius: 50%;
+    display: inline-block
+}
+
+.big-dot {
+    height: 25px;
+    width: 25px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-top: 0px;
+    background-color: #488978;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.big-dot i {
+    font-size: 12px;
+}
+
+.card-stepper {
+    z-index: 0
+}
+.vertical-hr {
+    border-left: 1px solid black; /* or any color you prefer */
+    height: 100%; /* Adjust as needed */
+    width: 0px;
+    margin: 0 auto; /* This centers the line if the col-2 div is wider than 1px */
+  }

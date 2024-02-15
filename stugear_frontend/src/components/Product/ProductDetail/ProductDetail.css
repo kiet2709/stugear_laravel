@@ -1,0 +1,37 @@
+#product-title {
+    font-family: 'Droid Serif';
+    color: black !important;
+    font-weight: 700;
+}
+
+.middle-image {
+    max-width: 200px !important;
+}
+
+
+.info-row {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  .info-key {
+    flex: 1;
+    font-weight: bold;
+  }
+  
+  .info-value {
+    flex: 3;
+  }
+  
+  .wishtlist-btn {
+    margin-left: 29rem;
+  }
+
+  .wishtlist-btn .btn {
+    background-color: palevioletred;
+  }
+
+
+  .wishtlist-btn .btn:hover {
+    background-color: palevioletred;
+  }

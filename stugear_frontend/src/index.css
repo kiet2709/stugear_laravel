@@ -1,0 +1,48 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+#root {
+  background-color: #F7F7F8;
+}
+
+.btn {
+  background-color: #7355F7;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #4F29F5;
+  color: white;
+}
+
+.badge {
+  margin-top: 7px;
+  border-radius: 9px;
+}
+
+
+#lblWishlistCount {
+    font-size: 12px;
+    background: #ff0000;
+    color: #fff;
+    padding: 1px 5px;
+    vertical-align: top;
+    margin-left: -5px; 
+}
+.counter {
+
+  display: inline;
+  background-color: #ff0000; /* Background color for the counter */
+  color: #ffffff; /* Text color for the counter */
+  padding: 6px 10px; /* Padding to provide some spacing around the counter */
+  border-radius: 4px; /* Border radius for rounded corners */
+  font-weight: bold; /* Make the text bold if desired */
+  font-size: 10px;
+
+  vertical-align: top;
+
+}

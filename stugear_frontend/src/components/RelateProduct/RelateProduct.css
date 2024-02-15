@@ -1,0 +1,12 @@
+.relate-product-header {
+    background-color: #7355F7 !important;
+}   
+
+.relate-product-item:hover {
+    background-color: aliceblue;
+
+}
+
+.relate-product-item {
+    padding: 5px;
+}

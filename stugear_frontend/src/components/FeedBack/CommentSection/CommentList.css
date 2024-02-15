@@ -1,0 +1,34 @@
+.comment-list {
+  max-height: 700px;
+  /* Set a maximum height for the comment list */
+  overflow-y: auto;
+  /* Enable vertical scrolling if content exceeds the height */
+}
+
+/* If necessary, you may also want to set a maximum height for each individual comment */
+.Comment {
+  max-height: 300px;
+  /* Set a maximum height for each comment */
+  overflow-y: auto;
+  /* Enable vertical scrolling if content exceeds the height */
+}
+
+/* If you want to style the scrollbar, you can use the following CSS */
+/* Note that this may not work in all browsers (e.g., Firefox) without vendor prefixes */
+/* You may need to add prefixes for cross-browser compatibility */
+
+.comment-list::-webkit-scrollbar {
+  width: 10px;
+  /* Set the width of the scrollbar */
+}
+
+.comment-list::-webkit-scrollbar-thumb {
+  background-color: #888;
+  /* Set the color of the scrollbar thumb */
+}
+
+.comment-list::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
+  /* Set the color of the scrollbar track */
+}
+

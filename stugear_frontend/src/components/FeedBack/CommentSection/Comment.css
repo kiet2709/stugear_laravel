@@ -1,0 +1,71 @@
+
+.img-sm {
+    width: 46px;
+    height: 46px;
+}
+
+
+.panel-body {
+    padding: 10px
+}
+
+
+.media-block .media-left {
+    display: block;
+    float: left
+}
+
+
+
+.media-block .media-body {
+    display: block;
+    overflow: hidden;
+    width: auto;
+    margin-left: 15px;
+}
+
+
+
+
+.btn-reply {
+    background-color: #2ECC71 !important;
+    margin-left: 5px;
+}
+
+.btn-like {
+    background-color: white !important;
+    margin-right: 5px;
+}
+
+.btn-unlike {
+    background-color: white !important;
+}
+
+.btn-submit {
+    margin-left: 90%;
+}
+
+.reply-section{
+    width: 500px;
+}
+
+.vote-icon {
+    font-size: 20px; 
+    color:#606060; 
+    text-align: center;
+}
+
+.vote-icon  a{
+    color: #606060;
+    border: black 1px solid;
+    border-radius: 50%;
+  }
+
+  .vote-icon  a:hover{
+    background-color: #F9DEC8;
+    border: black 1px solid;
+    border-radius: 70%;
+  }
+  .vote-icon-up {
+    font-size: 19px; 
+  }
