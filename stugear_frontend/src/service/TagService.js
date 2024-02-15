@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { axiosPrivate } from '../api/axios'
 
-const TAG_URL = 'http://localhost:8000/api/tags'
+const TAG_URL = 'https://stugear.website/api/tags'
 class TagService {
     getAllTags(){
         return axios

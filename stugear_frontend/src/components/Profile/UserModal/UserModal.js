@@ -91,7 +91,7 @@ const UserModal = ({ userId }) => {
     <>
       <span onClick={openModal}>
         <img
-          src={`http://localhost:8000/api/users/${userId}/images`}
+          src={`https://stugear.website/api/users/${userId}/images`}
           className="hover-effect pic rounded-circle"
           style={{ width: "40px", height: "40px" }}
           alt=""
@@ -200,7 +200,7 @@ const UserModal = ({ userId }) => {
                     <div className="d-flex text-black">
                       <div className="flex-shrink-0">
                         <img
-                          src={`http://localhost:8000/api/users/${user?.id}/images`}
+                          src={`https://stugear.website/api/users/${user?.id}/images`}
                           alt=""
                           className="img-fluid"
                           style={{ width: 148, height: 150, borderRadius: 10 }}

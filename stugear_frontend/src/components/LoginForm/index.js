@@ -62,11 +62,11 @@ const LoginForm = () => {
       await getUserInfo()
       localStorage.setItem(
         "user_image",
-        `http://localhost:8000/api/users/${response?.user_id}/images`
+        `https://stugear.website/api/users/${response?.user_id}/images`
       );
       setUser({
         ...response,
-        user_image: `http://localhost:8000/api/users/${response?.user_id}/images`,
+        user_image: `https://stugear.website/api/users/${response?.user_id}/images`,
       });
       setLoading(false);
     }

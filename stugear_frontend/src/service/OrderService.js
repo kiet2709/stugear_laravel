@@ -1,6 +1,6 @@
 import axios from "axios";
 import { axiosPrivate } from "../api/axios";
-const ORDER_URL = "http://localhost:8000/api/orders";
+const ORDER_URL = "https://stugear.website/api/orders";
 
 class OrderService {
 

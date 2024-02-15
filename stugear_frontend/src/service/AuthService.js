@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 
-// const AUTH_URL = 'http://localhost:8000/api/auth';
-const AUTH_URL = 'http://localhost:8000/api/auth';
+// const AUTH_URL = 'https://stugear.website/api/auth';
+const AUTH_URL = 'https://stugear.website/api/auth';
 
 class AuthService {
   register (user) {
@@ -45,7 +45,7 @@ class AuthService {
   }
 
   sendVerifyPin(email, pin){
-    return axios.post('http://localhost:8000/api/products/verify-email', {
+    return axios.post('https://stugear.website/api/products/verify-email', {
       email: email,
       verify_code: pin,
     })

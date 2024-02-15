@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { axiosPrivate } from "../api/axios";
-const CATEGORY_URL = 'http://localhost:8000/api/categories'
+const CATEGORY_URL = 'https://stugear.website/api/categories'
 class CategoryService {
   getAllCategories () {
     return axios.get(CATEGORY_URL)

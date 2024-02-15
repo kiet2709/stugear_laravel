@@ -1,6 +1,6 @@
 import axios from "axios";
 import { axiosPrivate } from "../api/axios";
-const ASK_URL = "http://localhost:8000/api/asks";
+const ASK_URL = "https://stugear.website/api/asks";
 
 class AskService {
   reportUser(denounced_id, description) {

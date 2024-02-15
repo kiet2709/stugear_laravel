@@ -11,7 +11,7 @@ function UserAvatar({userInfo}) {
     setUser({
       ...user,
       user_image:
-        `http://localhost:8000/api/users/${user?.user_id}/images/` +
+        `https://stugear.website/api/users/${user?.user_id}/images/` +
         `?timestamp=${new Date().getTime()}`,
     });
 

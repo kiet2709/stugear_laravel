@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { axiosPrivate } from '../api/axios';
-const PAYMENT_URL = 'http://localhost:8000/api/payments'
+const PAYMENT_URL = 'https://stugear.website/api/payments'
 
 class PaymentService {
     VNPay(amount) {

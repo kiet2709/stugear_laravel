@@ -1,7 +1,7 @@
 import axios from "axios";
 import useRefreshToken from "../hooks/useRefreshToken";
 import { useNavigate } from "react-router-dom";
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "https://stugear.website/api";
 
 const LOGIN_PAGE_URL = '/login';
 const axiosPrivate = axios.create({
